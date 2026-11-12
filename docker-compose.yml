@@ -1,0 +1,55 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# TNA & Skill Matrix Tracker — local production-style stack
+#
+#   1) docker compose up -d --build                  → PostgreSQL + app on :3000
+#   2) docker compose --profile tools run --rm init  → one-time: schema + demo data
+#   3) open http://localhost:3000  (demo logins: see README §10)
+#
+# For anything beyond a local demo, set a real AUTH_SECRET in a .env file next
+# to this compose file (loaded automatically) before starting the stack:
+#   AUTH_SECRET=$(openssl rand -hex 32)
+# ─────────────────────────────────────────────────────────────────────────────
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: tna
+      POSTGRES_PASSWORD: tna_demo_password
+      POSTGRES_DB: tna_skill_matrix
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tna -d tna_skill_matrix"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://tna:tna_demo_password@db:5432/tna_skill_matrix
+      AUTH_SECRET: ${AUTH_SECRET:-please-change-me-openssl-rand-hex-32}
+    ports:
+      - "3000:3000"
+
+  # One-time initializer (does not start with `docker compose up`):
+  # installs dependencies, generates the Prisma client, pushes the schema
+  # to PostgreSQL and loads the deterministic synthetic dataset.
+  init:
+    image: oven/bun:1
+    profiles: ["tools"]
+    working_dir: /src
+    volumes:
+      - .:/src
+    environment:
+      DATABASE_URL: postgresql://tna:tna_demo_password@db:5432/tna_skill_matrix
+    command: sh -c "bun install && bunx prisma generate && bunx prisma db push && bun prisma/seed.ts"
+
+volumes:
+  pgdata:

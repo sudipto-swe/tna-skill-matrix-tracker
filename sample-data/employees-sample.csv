@@ -1,0 +1,41 @@
+﻿Employee Code,Employee Name,Department,Production Area,Job Role,Designation,Joining Date,Employment Status,Supervisor,Shift,Employment Category
+SE-1001,Md. Rafiqul Ahmed,Production,Making Line 1,Production Manager,Production Manager,2011-02-04,active,Md. Ashraful Alam (Plant Manager),General,Permanent
+SE-1002,Kamrul Hossain,Quality Assurance,Testing Laboratory,QA Manager,QA Manager,2007-12-21,active,Md. Ashraful Alam (Plant Manager),General,Contract
+SE-1003,Nasrin Chowdhury,Engineering,Process Engineering,Engineering Manager,Engineering Manager,2006-10-02,active,Md. Ashraful Alam (Plant Manager),General,Permanent
+SE-1004,Mohammad Habibur Mia,Production,Blend Preparation,Production Supervisor,Production Supervisor,2019-11-24,active,Md. Rafiqul Ahmed,General,Permanent
+SE-1005,Yousuf Siddique,Production,Packing Line 1,Production Supervisor,Production Supervisor,2014-11-02,active,Md. Rafiqul Ahmed,General,Permanent
+SE-1006,Fatema Sultana,Production,Blend Preparation,Production Supervisor,Production Supervisor,2023-07-26,active,Md. Rafiqul Ahmed,Morning,Permanent
+SE-1007,Mohammad Shohag Bhuiyan,Quality Assurance,In-Process Control,QA Officer,QA Officer,2018-08-15,notice_period,Kamrul Hossain,General,Permanent
+SE-1008,Md. Rafiqul Khan,Quality Assurance,Finished Goods Inspection,QA Officer,QA Officer,2011-07-25,active,Kamrul Hossain,General,Permanent
+SE-1009,Md. Ashraful Kabir,Quality Assurance,In-Process Control,QA Officer,QA Officer,2017-10-26,active,Kamrul Hossain,General,Contract
+SE-1010,Zahid Ahmed,Engineering,Process Engineering,Process Engineer,Process Engineer,2022-07-23,notice_period,Nasrin Chowdhury,General,Permanent
+SE-1011,Ruma Sultana,Engineering,Process Engineering,Process Engineer,Process Engineer,2013-05-24,active,Nasrin Chowdhury,General,Permanent
+SE-1012,Shahjahan Kabir,Engineering,Process Engineering,Process Engineer,Senior Process Engineer,2016-10-17,active,Nasrin Chowdhury,General,Permanent
+SE-1013,Babul Zaman,Engineering,Utilities,Utility Engineer,Utility Engineer,2021-03-24,active,Nasrin Chowdhury,General,Permanent
+SE-1014,Nasir Hossain,Engineering,Utilities,Utility Engineer,Utility Engineer,2022-04-28,active,Nasrin Chowdhury,Morning,Permanent
+SE-1015,Shirin Begum,Maintenance,Mechanical Workshop,Maintenance Supervisor,Maintenance Supervisor,2011-10-07,notice_period,Md. Ashraful Alam (Plant Manager),General,Contract
+SE-1016,Jahid Khan,Warehouse,Finished Goods Store,Warehouse Supervisor,Warehouse Supervisor,2016-12-04,active,Md. Ashraful Alam (Plant Manager),General,Permanent
+SE-1017,Nazmul Hossain,Supply Chain,Receiving Dock,Supply Chain Officer,Supply Chain Officer,2012-04-28,active,Md. Ashraful Alam (Plant Manager),General,Permanent
+SE-1018,Rashed Alam,Supply Chain,Planning Office,Supply Chain Officer,Supply Chain Officer,2020-07-04,active,Nazmul Hossain,General,Permanent
+SE-1019,Rokeya Chowdhury,Supply Chain,Receiving Dock,Supply Chain Officer,Supply Chain Officer,2012-10-11,active,Nazmul Hossain,General,Permanent
+SE-1020,Mohammad Prodip Mia,Supply Chain,Receiving Dock,Supply Chain Officer,Senior Supply Chain Officer,2022-04-19,active,Nazmul Hossain,General,Permanent
+SE-1021,Md. Aminul Zaman,EHS,EHS Office (Plant-wide),Safety Officer,Safety Officer,2011-12-10,active,Md. Ashraful Alam (Plant Manager),General,Contract
+SE-1022,Anwar Morshed,EHS,EHS Office (Plant-wide),Safety Officer,Safety Officer,2006-02-11,active,Md. Aminul Zaman,General,Contract
+SE-1023,Rokeya Akter,Human Resources,Administration & Training,HR Officer,HR Officer,2017-02-14,active,Khurshid Sheikh,General,Permanent
+SE-1024,Mohammad Rakibul Sarkar,Human Resources,Administration & Training,HR Officer,Senior HR Officer,2014-10-16,active,Khurshid Sheikh,General,Permanent
+SE-1025,Shirin Akter,Human Resources,Administration & Training,HR Officer,HR Officer,2019-07-13,active,Khurshid Sheikh,General,Permanent
+SE-1026,Khurshid Sheikh,Human Resources,Administration & Training,Training Officer,Senior Training Officer,2019-07-04,active,Md. Ashraful Alam (Plant Manager),General,Permanent
+SE-1027,Nasrin Khatun,Production,Making Line 1,Machine Operator (Making),Machine Operator III,2006-10-22,active,Md. Rafiqul Ahmed,Rotating,Permanent
+SE-1028,Mohammad Jahid Chowdhury,Production,Making Line 2,Machine Operator (Making),Machine Operator II,2006-08-07,active,Md. Rafiqul Ahmed,Night,Permanent
+SE-1029,Mohammad Dulal Sarkar,Production,Making Line 2,Machine Operator (Making),Machine Operator II,2015-09-03,active,Md. Rafiqul Ahmed,Evening,Permanent
+SE-1030,Mostafizur Bhuiyan,Production,Making Line 2,Machine Operator (Making),Machine Operator I,2022-12-03,active,Md. Rafiqul Ahmed,Morning,Permanent
+SE-1031,Md. Mahmudul Khan,Production,Making Line 1,Machine Operator (Making),Machine Operator II,2014-01-19,active,Md. Rafiqul Ahmed,Rotating,Permanent
+SE-1032,Wahid Morshed,Production,Making Line 1,Machine Operator (Making),Machine Operator II,2006-08-09,active,Md. Rafiqul Ahmed,Rotating,Permanent
+SE-1033,Sadia Sultana,Production,Making Line 1,Machine Operator (Making),Machine Operator II,2012-08-04,active,Md. Rafiqul Ahmed,Rotating,Permanent
+SE-1034,Shafiq Zaman,Production,Making Line 2,Machine Operator (Making),Machine Operator II,2008-08-15,active,Md. Rafiqul Ahmed,Rotating,Permanent
+SE-1035,Touhid Siddique,Production,Making Line 1,Machine Operator (Making),Machine Operator I,2011-04-13,active,Md. Rafiqul Ahmed,Night,Contract
+SE-1036,Mohammad Anwar Rahman,Production,Making Line 1,Machine Operator (Making),Machine Operator II,2018-08-13,active,Md. Rafiqul Ahmed,Night,Permanent
+SE-1037,Nazmun Khatun,Production,Making Line 2,Machine Operator (Making),Machine Operator III,2021-08-21,active,Md. Rafiqul Ahmed,Evening,Permanent
+SE-1038,Sumaiya Haq,Production,Making Line 2,Machine Operator (Making),Machine Operator II,2009-07-10,active,Md. Rafiqul Ahmed,Rotating,Permanent
+SE-1039,Imran Bhuiyan,Production,Making Line 1,Machine Operator (Making),Machine Operator II,2013-10-13,active,Md. Rafiqul Ahmed,Morning,Contract
+SE-1040,Mohammad Liton Talukder,Production,Making Line 1,Machine Operator (Making),Machine Operator I,2025-12-17,active,Md. Rafiqul Ahmed,Night,Permanent

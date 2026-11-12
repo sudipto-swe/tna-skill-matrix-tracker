@@ -1,0 +1,326 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Training Needs Analysis & Skill Matrix Tracker — Prisma Schema
+// Portfolio simulation. All data is synthetic.
+//
+// Notes:
+//  - SQLite is used in the sandbox (schema is portable to PostgreSQL: replace
+//    provider and run `prisma migrate`; no SQLite-specific types are used).
+//  - Arrays are stored as JSON strings (SQLite has no array type) and parsed
+//    at the application layer.
+//  - Enum-like fields are String + validated with Zod at the API layer.
+// ─────────────────────────────────────────────────────────────────────────────
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ── Access control ───────────────────────────────────────────────────────────
+
+model Role {
+  id          String   @id @default(cuid())
+  code        String   @unique // administrator | training_officer | department_supervisor | employee
+  name        String
+  description String?
+  permissions String // JSON array of permission strings, e.g. ["employees:read:all", ...]
+  users       User[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String
+  passwordHash String
+  roleId       String
+  role         Role      @relation(fields: [roleId], references: [id])
+  employeeId   String?   @unique
+  employee     Employee? @relation(fields: [employeeId], references: [id])
+  status       String    @default("active") // active | disabled
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([roleId])
+}
+
+// ── Organisation structure ───────────────────────────────────────────────────
+
+model Department {
+  id             String           @id @default(cuid())
+  code           String           @unique
+  name           String           @unique
+  description    String?
+  productionAreas ProductionArea[]
+  jobRoles       JobRole[]
+  employees      Employee[]
+  competencies   Competency[]
+  sessions       TrainingSession[]
+
+  @@index([name])
+}
+
+model ProductionArea {
+  id           String     @id @default(cuid())
+  code         String     @unique
+  name         String
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id])
+  employees    Employee[]
+
+  @@index([departmentId])
+}
+
+model JobRole {
+  id               String            @id @default(cuid())
+  code             String            @unique
+  title            String
+  grade            String // Worker | Staff | Officer | Manager
+  departmentId     String
+  department       Department        @relation(fields: [departmentId], references: [id])
+  employees        Employee[]
+  roleCompetencies RoleCompetency[]
+
+  @@index([departmentId])
+}
+
+model Employee {
+  id              String        @id @default(cuid())
+  employeeCode    String        @unique
+  name            String
+  departmentId    String
+  department      Department    @relation(fields: [departmentId], references: [id])
+  productionAreaId String?
+  productionArea  ProductionArea? @relation(fields: [productionAreaId], references: [id])
+  jobRoleId       String
+  jobRole         JobRole       @relation(fields: [jobRoleId], references: [id])
+  designation     String
+  joiningDate     DateTime
+  status          String        @default("active") // active | probation | on_leave | notice_period | separated
+  supervisorName  String?
+  shift           String // General | Morning | Evening | Night | Rotating
+  category        String // Permanent | Contract | Trainee
+  assessments     Assessment[]
+  enrollments     Enrollment[]
+  attendanceRecords AttendanceRecord[]
+  qualifications  Qualification[]
+  users           User[]
+
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@index([departmentId])
+  @@index([jobRoleId])
+  @@index([name])
+  @@index([status])
+}
+
+// ── Competency framework ─────────────────────────────────────────────────────
+
+model Competency {
+  id                     String        @id @default(cuid())
+  code                   String        @unique
+  name                   String
+  description            String
+  category               String // Technical | Quality | Safety | Compliance | Operational Excellence | Behavioral
+  departmentId           String? // owning department (null = plant-wide)
+  department             Department?   @relation(fields: [departmentId], references: [id])
+  baselineLevel          Int           @default(2)
+  assessmentCriteria     String
+  assessmentFrequencyMonths Int        @default(12)
+  validityMonths         Int           @default(24)
+  safetyCritical         Boolean       @default(false)
+  mandatory              Boolean       @default(false)
+  active                 Boolean       @default(true)
+  roleCompetencies       RoleCompetency[]
+  assessments            Assessment[]
+  qualifications         Qualification[]
+  programs               TrainingProgram[]
+
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @updatedAt
+
+  @@index([category])
+  @@index([departmentId])
+  @@index([safetyCritical])
+  @@index([active])
+}
+
+model RoleCompetency {
+  id           String      @id @default(cuid())
+  jobRoleId    String
+  jobRole      JobRole     @relation(fields: [jobRoleId], references: [id])
+  competencyId String
+  competency   Competency @relation(fields: [competencyId], references: [id])
+  requiredLevel Int
+
+  createdAt    DateTime    @default(now())
+
+  @@unique([jobRoleId, competencyId])
+  @@index([competencyId])
+}
+
+model Assessment {
+  id            String      @id @default(cuid())
+  employeeId    String
+  employee      Employee    @relation(fields: [employeeId], references: [id])
+  competencyId  String
+  competency    Competency  @relation(fields: [competencyId], references: [id])
+  level         Int // 1..4
+  assessedBy    String
+  assessedById  String?
+  assessedAt    DateTime
+  notes         String?
+
+  createdAt     DateTime    @default(now())
+
+  @@unique([employeeId, competencyId, assessedAt])
+  @@index([employeeId])
+  @@index([competencyId])
+  @@index([assessedAt])
+}
+
+// ── Training management ──────────────────────────────────────────────────────
+
+model TrainingProgram {
+  id            String            @id @default(cuid())
+  code          String            @unique
+  title         String
+  category      String // Safety | Quality | Technical | Compliance | Operational Excellence | Leadership
+  description   String?
+  competencyId  String?
+  competency    Competency?       @relation(fields: [competencyId], references: [id])
+  durationHours Float             @default(4)
+  deliveryMode  String            @default("Classroom") // Classroom | On-job | Online | Blended
+  active        Boolean           @default(true)
+  sessions      TrainingSession[]
+
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+}
+
+model TrainingSession {
+  id                 String             @id @default(cuid())
+  code               String             @unique
+  programId          String
+  program            TrainingProgram    @relation(fields: [programId], references: [id])
+  title              String
+  scheduledDate      DateTime
+  startTime          String // "09:00"
+  durationHours      Float
+  location           String
+  trainer            String
+  capacity           Int
+  status             String             @default("scheduled") // scheduled | in_progress | completed | cancelled
+  targetDepartmentId String?
+  targetDepartment   Department?        @relation(fields: [targetDepartmentId], references: [id])
+  notes              String?
+  enrollments        Enrollment[]
+  attendanceRecords  AttendanceRecord[]
+
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  @@index([scheduledDate])
+  @@index([status])
+  @@index([programId])
+}
+
+model Enrollment {
+  id         String          @id @default(cuid())
+  sessionId  String
+  session    TrainingSession @relation(fields: [sessionId], references: [id])
+  employeeId String
+  employee   Employee        @relation(fields: [employeeId], references: [id])
+  status     String          @default("enrolled") // enrolled | completed | dropped
+  enrolledAt DateTime        @default(now())
+
+  @@unique([sessionId, employeeId])
+  @@index([employeeId])
+}
+
+model AttendanceRecord {
+  id         String          @id @default(cuid())
+  sessionId  String
+  session    TrainingSession @relation(fields: [sessionId], references: [id])
+  employeeId String
+  employee   Employee        @relation(fields: [employeeId], references: [id])
+  status     String // present | absent | excused
+  qualified  Boolean         @default(false)
+  remarks    String?
+  recordedAt DateTime        @default(now())
+
+  @@unique([sessionId, employeeId])
+  @@index([employeeId])
+}
+
+model Qualification {
+  id             String      @id @default(cuid())
+  employeeId     String
+  employee       Employee    @relation(fields: [employeeId], references: [id])
+  competencyId   String
+  competency     Competency  @relation(fields: [competencyId], references: [id])
+  issuedAt       DateTime
+  expiresAt      DateTime
+  certificateRef String?
+  notes          String?
+
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+
+  @@unique([employeeId, competencyId])
+  @@index([expiresAt])
+  @@index([competencyId])
+}
+
+// ── Alerts, audit, settings ──────────────────────────────────────────────────
+
+model Notification {
+  id           String    @id @default(cuid())
+  userId       String? // null => role-wide broadcast
+  audienceRole String? // role code for role-wide alerts
+  type         String // qualification_expired | qualification_expiring | session_upcoming | tna_critical | system
+  severity     String // critical | high | medium | info
+  title        String
+  message      String
+  linkView     String?
+  entityId     String?
+  readAt       DateTime?
+  createdAt    DateTime    @default(now())
+
+  @@index([userId])
+  @@index([audienceRole])
+  @@index([readAt])
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  userName  String
+  roleCode  String?
+  action    String // login | logout | create | update | delete | export | import | seed
+  entity    String
+  entityId  String?
+  details   String?
+  ip        String?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([entity])
+  @@index([userId])
+}
+
+model Setting {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String // JSON string
+  description String?
+  updatedBy   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
